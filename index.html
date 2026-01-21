@@ -282,7 +282,7 @@ function sendLine(){
   let m = `【龍天宮 ${YEAR} 年度 祈福報名表】\n`;
   m += `聯絡人：${document.getElementById('contactName').value}\n`;
   m += `電話：${document.getElementById('phone').value}\n`;
-  m += `────────────────\n`;
+  m += `────────────\n`;
 
   let grandTotal = 0;  
  
@@ -328,7 +328,7 @@ function sendLine(){
 
     if (categoryTotal > 0) {
       m += `小計：${categoryTotal} 元\n`;
-      m += `====================\n`;
+      m += `=============\n`;
       grandTotal += categoryTotal;
     }
   });
@@ -348,7 +348,7 @@ function sendLine(){
     }
   });
 
-  m += `────────────────\n`;
+  m += `────────────\n`;
   m += `合計金額：${grandTotal} 元`;
 //合計
   window.open("https://line.me/R/oaMessage/@869aysjq/?" + encodeURIComponent(m));
@@ -358,6 +358,7 @@ function sendLine(){
 </body>
 
 </html>
+
 
 
 
