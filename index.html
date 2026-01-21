@@ -284,9 +284,8 @@ function sendLine(){
   m += `電話：${document.getElementById('phone').value}\n`;
   m += `────────────────\n`;
 
-  let grandTotal = 0;  // 總計（原本就有，但我們再算一次確認）
-
-  // 定義所有類別與它們的顯示名稱、價格、ID
+  let grandTotal = 0;  
+ 
   const categories = [
     { id: "light",   name: "光明燈",   price: PRICE.light   },
     { id: "taisui",  name: "太歲",     price: PRICE.taisui  },
@@ -295,12 +294,12 @@ function sendLine(){
     { id: "peace5T", name: "平安年斗5000元", price: PRICE.peace5T },
     { id: "peace3T", name: "平安年斗3000元", price: PRICE.peace3T },
     { id: "peace1T", name: "平安年斗1000元", price: PRICE.peace1T },
-    // 五大主斗沒有固定價格，這裡先不計入小計（可自行調整）
+
   ];
 
   categories.forEach(cat => {
     const items = document.querySelectorAll(`#${cat.id} .item`);
-    if (items.length === 0) return;  // 沒填就跳過
+    if (items.length === 0) return;  
 
     let categoryTotal = 0;
     let index = 1;
@@ -311,13 +310,13 @@ function sendLine(){
       const typeElem = item.querySelector(".t");
       const custom = item.querySelector(".c")?.value?.trim();
 
-      // 判斷是否有效填寫（姓名 + 年份）
+
       if (!name || !year) return;
 
       let type = custom || (typeElem ? typeElem.value : "");
       let line = `${index}. ${cat.name} ${name} 民國${year} ${gz(year)}【${type}】\n`;
       
-      // 五大主斗特殊處理（沒有年份）
+
       if (cat.id === "peace5M") {
         line = `${index}. 五大主斗 ${name}【${type}】\n`;
       }
@@ -334,7 +333,7 @@ function sendLine(){
     }
   });
 
-  // 新增/更新資料（不計入金額，只列出）
+
   m += `新增或更新資料：\n`;
   document.querySelectorAll("#newbie .item").forEach((item, idx) => {
     const type = item.querySelector(".t")?.value;
@@ -352,11 +351,12 @@ function sendLine(){
   m += `────────────────\n`;
   m += `合計金額：${grandTotal} 元`;
 
-  window.open("https://line.me/R/oaMessage/@813bpsag/?" + encodeURIComponent(m));
+  window.open("https://line.me/R/oaMessage/@869aysjq/?" + encodeURIComponent(m));
 }
 </script>
 
 </body>
 
 </html>
+
 
