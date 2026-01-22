@@ -351,13 +351,19 @@ function sendLine(){
 m += `────────────\n`;
   m += `合計金額：${grandTotal} 元`;
 
-  // 先把資料整理成要傳給 Google Apps Script 的格式
+  // 先跳 LINE（使用者直接看到）
+  const lineUrl = "https://line.me/R/oaMessage/@869aysjq/?" + encodeURIComponent(m);
+  window.open(lineUrl, '_blank');
+
+  alert("已開啟 LINE 確認訊息，請確認後傳送！\n同時資料正在背景存檔...");
+
+  // 背景送資料到 Sheet（不影響使用者體驗）
   let formData = new URLSearchParams();
   formData.append('contactName', document.getElementById('contactName').value);
   formData.append('phone', document.getElementById('phone').value);
-  formData.append('total', grandTotal);  // 使用剛算好的 grandTotal
+  formData.append('total', grandTotal);
 
-  // 光明燈資料（串成字串傳過去）
+  // 光明燈（範例）
   let lightItems = '';
   document.querySelectorAll("#light .item").forEach((item, idx) => {
     const name = item.querySelector(".n")?.value?.trim();
@@ -369,40 +375,23 @@ m += `────────────\n`;
   });
   formData.append('lightItems', lightItems);
 
-  let taisuiItems = '';
-  document.querySelectorAll("#taisui .item").forEach((item, idx) => {
-    const name = item.querySelector(".n")?.value?.trim();
-    const year = item.querySelector(".y")?.value?.trim();
-    if (name && year) {
-      taisuiItems += `${idx+1}. ${name} 民國${year} ${gz(year)}\n`;
-  }
-});
-formData.append('taisuiItems', taisuiItems);
-  // 你可以繼續加其他類別的資料，例如太歲、祭改等（格式類似）
-  // 這裡先示範光明燈，其他類別可自行加
-  // 例如太歲：
-  // let taisuiItems = '';
-  // ... 類似上面寫法 ...
-  // formData.append('taisuiItems', taisuiItems);
+  // 加其他類別類似...
 
-  // 送資料到 Google Apps Script
-  fetch('https://script.google.com/macros/s/AKfycbzz7IzK36S7u_Re9mF8UdKm8AV1H7jk1tWGR9ODfU-lpq6_yctrhzdmyBwetRNoOyQdgg/exec', {  // ← 貼上你從 Apps Script 部署得到的網址
+  fetch('https://script.google.com/macros/s/AKfycbzz7IzK36S7u_Re9mF8UdKm8AV1H7jk1tWGR9ODfU-lpq6_yctrhzdmyBwetRNoOyQdgg/exec', {
     method: 'POST',
     body: formData
   })
   .then(response => response.text())
   .then(result => {
     if (result.trim() === "success") {
-      // 存成功，再跳到 LINE
-      window.open("https://line.me/R/oaMessage/@869aysjq/?" + encodeURIComponent(m));
-      alert("報名資料已成功存檔，並開啟 LINE 確認訊息！");
+      console.log("資料已存檔");
+      // 可選：不彈 alert，讓使用者專注 LINE
     } else {
-      alert("存檔失敗，請重試或聯絡主辦方");
+      console.error("存檔失敗");
     }
   })
   .catch(error => {
-    alert("網路錯誤，請檢查連線");
-    console.error(error);
+    console.error("網路錯誤", error);
   });
 }
 </script>
@@ -410,6 +399,7 @@ formData.append('taisuiItems', taisuiItems);
 </body>
 
 </html>
+
 
 
 
