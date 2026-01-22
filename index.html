@@ -348,16 +348,69 @@ function sendLine(){
     }
   });
 
-  m += `────────────\n`;
+m += `────────────\n`;
   m += `合計金額：${grandTotal} 元`;
-//合計
-  window.open("https://line.me/R/oaMessage/@869aysjq/?" + encodeURIComponent(m));
+
+  // 先把資料整理成要傳給 Google Apps Script 的格式
+  let formData = new URLSearchParams();
+  formData.append('contactName', document.getElementById('contactName').value);
+  formData.append('phone', document.getElementById('phone').value);
+  formData.append('total', grandTotal);  // 使用剛算好的 grandTotal
+
+  // 光明燈資料（串成字串傳過去）
+  let lightItems = '';
+  document.querySelectorAll("#light .item").forEach((item, idx) => {
+    const name = item.querySelector(".n")?.value?.trim();
+    const year = item.querySelector(".y")?.value?.trim();
+    const type = item.querySelector(".c")?.value?.trim() || item.querySelector(".t")?.value || '';
+    if (name && year) {
+      lightItems += `${idx+1}. ${name} 民國${year} ${gz(year)}【${type}】\\n`;
+    }
+  });
+  formData.append('lightItems', lightItems);
+
+  let taisuiItems = '';
+  document.querySelectorAll("#taisui .item").forEach((item, idx) => {
+    const name = item.querySelector(".n")?.value?.trim();
+    const year = item.querySelector(".y")?.value?.trim();
+    if (name && year) {
+      taisuiItems += `${idx+1}. ${name} 民國${year} ${gz(year)}\n`;
+  }
+});
+formData.append('taisuiItems', taisuiItems);
+  // 你可以繼續加其他類別的資料，例如太歲、祭改等（格式類似）
+  // 這裡先示範光明燈，其他類別可自行加
+  // 例如太歲：
+  // let taisuiItems = '';
+  // ... 類似上面寫法 ...
+  // formData.append('taisuiItems', taisuiItems);
+
+  // 送資料到 Google Apps Script
+  fetch('https://script.google.com/macros/s/AKfycbzz7IzK36S7u_Re9mF8UdKm8AV1H7jk1tWGR9ODfU-lpq6_yctrhzdmyBwetRNoOyQdgg/exec', {  // ← 貼上你從 Apps Script 部署得到的網址
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(result => {
+    if (result.trim() === "success") {
+      // 存成功，再跳到 LINE
+      window.open("https://line.me/R/oaMessage/@869aysjq/?" + encodeURIComponent(m));
+      alert("報名資料已成功存檔，並開啟 LINE 確認訊息！");
+    } else {
+      alert("存檔失敗，請重試或聯絡主辦方");
+    }
+  })
+  .catch(error => {
+    alert("網路錯誤，請檢查連線");
+    console.error(error);
+  });
 }
 </script>
 
 </body>
 
 </html>
+
 
 
 
