@@ -370,7 +370,7 @@ m += `────────────\n`;
     const year = item.querySelector(".y")?.value?.trim();
     const type = item.querySelector(".c")?.value?.trim() || item.querySelector(".t")?.value || '';
     if (name && year) {
-      lightItems += `${idx+1}. ${name} 民國${year} ${gz(year)}【${type}】\\n`;
+      lightItems += `${idx+1}. ${name} 民國${year} ${gz(year)}【${type}】<br>`;
     }
   });
   formData.append('lightItems', lightItems);
@@ -399,6 +399,7 @@ m += `────────────\n`;
 </body>
 
 </html>
+
 
 
 
